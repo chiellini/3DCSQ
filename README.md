@@ -1,109 +1,314 @@
-# 3DCSQ: An effective method for quantification, visualization and analysis of 3D cell shape during early embryogenesis 
+# 3DCSQ: 3D Cell Shape Quantification
 
-Zelin Li\*, Jianfeng Cao, Guoye Guan\*, Chao Tang, Zhongying Zhao, and Hong Yan
+[![Python 3.9](https://img.shields.io/badge/Python-3.9-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-\* Corresponding author. 
+**An Effective Method for Quantification, Visualization and Analysis of 3D Cell Shape During Early Embryogenesis**
+
+Zelin Li*, Jianfeng Cao, Guoye Guan*, Chao Tang, Zhongying Zhao, and Hong Yan
+
+*Corresponding author
+
+---
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Abstract](#abstract)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Core Functions](#core-functions)
+- [Scientific Concepts](#scientific-concepts)
+- [Usage Examples](#usage-examples)
+- [Citation](#citation)
+
+---
 
 ## Introduction
 
-This is the implementation of the above paper. We develop 3 shape features to quantify cell morphology. We also conduct multiple experiments and evaluations on real living biological worm's embryos, *C. elegans*. 
+This repository contains the official implementation of our research paper on 3D cell shape quantification. We developed three novel shape features to quantify cell morphology and conducted comprehensive experiments and evaluations on living *C. elegans* embryos.
 
-## Function Usages Introduction
-### test1.py/calculate_SPHARM_embryo_for_cells: calculate the spherical harmonics (transform) coefficient, *eigenharmonic*, for 1 embryo (3D+T) data.
-### test1.py/SPHARM_eigenharmonic: calculate every cell's *Eigenharmonic Weight Vector*
+The 3DCSQ method uniquely combines:
+- **Spherical Grids** - for surface sampling
+- **Spherical Harmonics (SPHARM)** - for shape transformation
+- **Principal Component Analysis (PCA)** - for dimensionality reduction
 
-### test1.py/Map2D_grid_csv: calculate the spherical grid coefficient, *eigengrid*, for 1 embryo (3D+T) data.
-### test1.py/Map_2D_eigengrid: calculate every cell's *Eigengrid Weight Vector*
+This comprehensive approach enables robust cell shape quantification, analysis, and visualization.
 
-### transformation/test1.py/do_sampling_with_interval: do sampling on the cell objects one by one for spherical grid.
+---
 
-
-## Documents
-The code is built in hierarchical structure, one sub-dict is a package, the higher packages can use functions in lower packages.
-
-### Lineage Tree Draw
-* use ./lineage_stat/draw_test.py -> 
-  * cell fate label tree -> draw_cell_fate_lineage_tree_01paper()
-
-## Project directory file tree
-
-Brief introduction on code directory.
-
-```html
-root/: work directory environment
-  |--DATA/: the transformation digital results in csv files or plotted figures, too large to upload on github
-  |--analysis/: 3rd layer, the analysis code including spherical harmonic transformation, contact area, clustering and PCA
-     |--SH_analyses.py: functions compare sherical harmonics reconstruction and original shapes.
-  |--data_scripts/: 1st layer, useless temporally.
-  |--experiment/: 4th layer, useless temporally.
-  |--lineage_stat/: 2nd layer, combine embryos, generate cell treelib files and cell lineage tree plot
-     |--data_structure.py: build the cell lineage tree by CD files. (exist or lost in every frame)
-     |--generate_life_span.py: generate the CD file
-     |--lineage_tree.py: plot lineage tree with cells' values
-     |--draw_test.py: combine embryos and draw lineage tree entry.
-  |--transformation/: 2nd layer, transform or extract features form 3D cells
-     |--R_matrix_representation.py: sample on 3D surface
-     |--SH_representation.py: transform spherical matrix to spherical harmonics matrix
-     |--PCA.py: some scripts draw PCA shapes.
-  |--utils/: 1st layer, all basic functions includes sample, transformation, contact detection
-     |--cell_func.py: get pairs of cell labels and names, calculate surface area, calculate volume, find contact or not
-     |--draw_func.py: some functions useful in drawing missions.
-     |--general_func.py: Cartesian coordinate system and spherical coordinate system conversion
-     |--sh_cooperation.py: SPHARM array to vector, vector to array
-     |--shape_model.py: research on cell-cell contact
-     |--shape_preprocess.py: cell CONTACT INFORMATION including points coordinates, cell surface extraction, erosion or dialation operation
-     |--spherical_func.py: sample for spherical harmonics transformation
-  |--
-```
 ## Abstract
-Embryogenesis, inherently three-dimensional, poses significant challenges in quantification when approached through 3D fluorescence imaging. Traditional descriptors such as volume, surface, and mean curvature often fall short, providing only a global view and lacking in local detail and reconstruction capability. Addressing this, we introduce an effective integrated method, 3D Cell Shape Quantification (3DCSQ), for transforming digitized 3D cell shapes into analytical feature vectors. This method uniquely combines spherical grids, spherical harmonics, and principal component analysis for a comprehensive approach to cell shape quantification, analysis, and visualization. We demonstrate 3DCSQ's effectiveness in recognizing cellular morphological phenotypes and clustering cells, utilizing feature vectors that are rigorously tested. Applied to Caenorhabditis elegans embryos, from 4- to 350-cell stages, 3DCSQ reliably identifies and quantifies biologically reproducible cellular patterns, including distinct skin cell deformations. By integrating cellular surface extraction, feature vector development, and cell shape clustering, 3DCSQ offers a robust platform for exploring cell shape's relationship with cell fate, enhancing our understanding of embryogenesis. This method not only systematizes cell shape description and evaluation but also monitors cell differentiation through shape changes, presenting a significant advancement in biological imaging and analysis.
 
-Keywords: spherical harmonics (SPHARM), cell shape quantification, morphological reproducibility, lineage analysis, Caenorhabditis elegans (C. elegans)
+Embryogenesis, inherently three-dimensional, poses significant challenges in quantification when approached through 3D fluorescence imaging. Traditional descriptors such as volume, surface area, and mean curvature often fall short, providing only a global view and lacking in local detail and reconstruction capability.
+
+Addressing this, we introduce **3DCSQ (3D Cell Shape Quantification)**, an effective integrated method for transforming digitized 3D cell shapes into analytical feature vectors. Key capabilities include:
+
+- **Shape Recognition**: Identifying cellular morphological phenotypes
+- **Cell Clustering**: Grouping cells based on shape similarity
+- **Pattern Detection**: Identifying biologically reproducible cellular patterns
+
+Applied to *Caenorhabditis elegans* embryos from 4- to 350-cell stages, 3DCSQ reliably identifies and quantifies biologically reproducible cellular patterns, including distinct skin cell deformations.
+
+**Keywords**: Spherical harmonics (SPHARM), Cell shape quantification, Morphological reproducibility, Lineage analysis, *C. elegans*
+
+---
+
+## Features
+
+- ✅ 3D cell surface extraction from segmentation data
+- ✅ Spherical harmonics transformation for shape representation
+- ✅ PCA-based shape feature extraction
+- ✅ K-means clustering for cell shape classification
+- ✅ Cell lineage tree visualization
+- ✅ Volume and surface area calculation
+- ✅ Contact detection between cells
+
+---
+
+## Installation
+
+### Prerequisites
+
+- Python 3.9+
+- Conda (recommended)
+
+### Environment Setup
+
+```bash
+# Update conda
+conda update -n base -c defaults conda
+
+# Create environment from requirements
+conda env create -f requirements.txt
+
+# Activate environment
+conda activate CellShapeAnalysis
+```
+
+### Key Dependencies
+
+| Package | Version |
+|---------|---------|
+| numpy | ~1.22.4 |
+| scipy | ~1.8.1 |
+| pandas | ~1.4.2 |
+| matplotlib | ~3.5.2 |
+| scikit-learn | ~1.1.1 |
+| pyshtools | latest |
+| open3d | ~0.15.2 |
+| nibabel | latest |
+| treelib | latest |
+
+---
+
+## Quick Start
+
+```python
+import utils.cell_func as cell_f
+import transformation.SH_represention as sh_represent
+
+# Load segmentation data
+img = cell_f.nii_get_cell_surface('path/to/segmentation.nii.gz')
+
+# Calculate spherical harmonics coefficients
+sh_coefficient = sh_represent.sample_and_SHc_with_surface(
+    surface_points, 
+    sample_N=30, 
+    lmax=14
+)
+
+# Perform PCA analysis
+from analysis.SH_analyses import analysis_SHcPCA_One_embryo
+analysis_SHcPCA_One_embryo(embryo_path, used_degree=16, l_degree=25)
+```
+
+---
+
+## Project Structure
+
+```
+cell_shape_quantification/
+├── analysis/                    # Analysis module (3rd layer)
+│   ├── SH_analyses.py          # Spherical harmonics analysis functions
+│   └── curvature.py            # Curvature calculations
+│
+├── transformation/              # Feature transformation (2nd layer)
+│   ├── SH_represention.py      # Spherical harmonics transformation
+│   ├── R_matrix_represention.py # Surface sampling methods
+│   └── PCA.py                  # PCA analysis utilities
+│
+├── lineage_stat/               # Lineage analysis (2nd layer)
+│   ├── data_structure.py       # Cell lineage tree construction
+│   ├── lineage_tree.py         # Lineage tree visualization
+│   └── generate_life_span.py   # Lifespan data generation
+│
+├── utils/                      # Utility functions (1st layer)
+│   ├── cell_func.py           # Cell operations (volume, surface, contacts)
+│   ├── general_func.py        # Coordinate transformations
+│   ├── spherical_func.py      # Spherical sampling functions
+│   ├── sh_cooperation.py      # SPHARM array utilities
+│   ├── shape_preprocess.py    # Surface extraction
+│   └── draw_func.py           # Visualization utilities
+│
+├── experiment/                 # Experimental scripts (4th layer)
+│   ├── cluster.py             # Clustering experiments
+│   └── geometry.py            # Geometric analysis
+│
+├── static/                     # Configuration
+│   ├── config.py              # Path configurations
+│   └── dict.py                # Cell fate dictionaries
+│
+├── DATA/                       # Data directory (not in repo)
+│   └── my_data_csv/           # Output CSV files
+│
+├── main.py                     # Main entry point
+├── test1.py                    # Core analysis functions
+└── requirements.txt            # Dependencies
+```
+
+---
+
+## Core Functions
+
+### Spherical Harmonics Transformation
+
+```python
+# Calculate SPHARM coefficients for one embryo (3D+T data)
+test1.py/calculate_SPHARM_embryo_for_cells()
+test1.py/SPHARM_eigenharmonic()  # Eigenharmonic Weight Vector
+```
+
+### Spherical Grid Representation
+
+```python
+# Calculate spherical grid coefficients (Eigengrid)
+test1.py/Map2D_grid_csv()
+test1.py/Map_2D_eigengrid()  # Eigengrid Weight Vector
+```
+
+### Surface Sampling
+
+```python
+# Sample cell surfaces with interval
+transformation/test1.py/do_sampling_with_interval()
+```
+
+### Lineage Tree
+
+```python
+# Draw cell fate lineage tree
+lineage_stat/draw_test.py -> draw_cell_fate_lineage_tree_01paper()
+```
+
+---
 
 ## Scientific Concepts
 
-### Curvature Of cell
+### Cell Curvature
 
-#### Gaussian curvature using libigl
+#### Gaussian Curvature (using libigl)
 
-https://libigl.github.io/libigl-python-bindings/tut-chapter1/
+Reference: [libigl Python Tutorials](https://libigl.github.io/libigl-python-bindings/tut-chapter1/)
 
+**Principal Curvatures**: The maximum and minimum curvature radii at surface points.
 
-**Principal curvatures**： the biggest and smallest radius of the points. 
+- [Principal Curvature (Wikipedia)](https://en.wikipedia.org/wiki/Principal_curvature)
+- [Gaussian Curvature (Wikipedia)](https://en.wikipedia.org/wiki/Gaussian_curvature)
 
-https://zh.wikipedia.org/wiki/%E4%B8%BB%E6%9B%B2%E7%8E%87
-https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF%E6%9B%B2%E7%8E%87
+### Coordinate Systems
 
-## Code Implementation
+The code uses standard spherical coordinate transformations:
 
-### Lineage tree draw
-* generate the tree files with command first go to lineage_stat folder
+- **Cartesian to Spherical**: Convert (x, y, z) to (r, θ, φ)
+- **Spherical to Cartesian**: Convert (r, θ, φ) to (x, y, z)
+
+Reference: [Spherical Coordinate System (Wikipedia)](https://en.wikipedia.org/wiki/Spherical_coordinate_system)
+
+---
+
+## Usage Examples
+
+### 1. Generate Lineage Tree
+
 ```bash
-    $ python generate_life_span.py  
-```
-1. this file would use function **construct_basic_tree** which would build a tree base on CD file with x position by cells' generation which time list is empty.
-2. code in file **generate_life_span.py** would add cells' frames to the trees base on CD files.
-3.  the CShaper embryo info, so i use embryo 06 to build basic tree in funcion **draw_PCA_combined**. 
-
-* draw the average tree
-    1. first, function **draw_PCA_combined** would construct a average lineage tree for all embryos.
-    2. second, the function **get_combined_lineage_tree** would go through this lineage tree and get the frame cells' values depend on time/frame resolutions.
-    3. third, at the drawing step, we would calculate all average value first and give cells values at different tp.
-    4. fourth, we go through the tree again and do interpolation for the lost cells. 
-
-* the legend frontzise is set at function **draw_life_span_tree**. 
-
-## Python Environment 
-Please update conda by running
-
-    $ conda update -n base -c defaults conda
-
-
-*  My environment setting
-```
-# environment location: C:\Users\zelinli6\miniconda3\envs\CellShapeAnalysis
-
-$ conda activate CellShapeAnalysis
+cd lineage_stat
+python generate_life_span.py
 ```
 
+This command:
+1. Builds a tree structure based on CD files
+2. Adds cell frame information to the trees
+3. Generates lineage tree files
 
+### 2. Draw Average Lineage Tree
+
+The process involves:
+1. Constructing an average lineage tree across all embryos
+2. Extracting frame cell values based on time resolution
+3. Calculating average values at each time point
+4. Interpolating for missing cells
+
+### 3. Shape Analysis Pipeline
+
+```python
+# Step 1: Extract cell surfaces
+from utils.cell_func import nii_get_cell_surface
+
+# Step 2: Calculate SPHARM coefficients
+from transformation.SH_represention import get_SH_coefficient_of_embryo
+
+# Step 3: Perform PCA
+from analysis.SH_analyses import analysis_SHcPCA_One_embryo
+
+# Step 4: Clustering
+from analysis.SH_analyses import analysis_SHc_Kmeans_One_embryo
+```
+
+---
+
+## Data Format
+
+### Input Data
+- **Segmentation Files**: NIfTI format (.nii.gz)
+- **Name Dictionary**: CSV file mapping cell labels to names
+
+### Output Data
+- **SPHARM Coefficients**: CSV files with shape descriptors
+- **PCA Results**: Principal components and explained variance
+- **Clustering Results**: Cell cluster assignments
+
+---
+
+## Citation
+
+If you use this code in your research, please cite:
+
+```bibtex
+@article{3dcsq2024,
+  title={3DCSQ: An effective method for quantification, visualization and analysis of 3D cell shape during early embryogenesis},
+  author={Li, Zelin and Cao, Jianfeng and Guan, Guoye and Tang, Chao and Zhao, Zhongying and Yan, Hong},
+  journal={...},
+  year={2024}
+}
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+- City University of Hong Kong
+- The research teams contributing to *C. elegans* imaging and analysis
+
+---
+
+## Contact
+
+For questions and support, please contact the corresponding authors.
